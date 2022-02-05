@@ -55,8 +55,5 @@ jobs:
       - name: Create SSH key
         run: echo "${{ secrets.SSH_PRIVATE_KEY }}" > .ansible_key
 
-      - name: debug
-        run: cat .ansible_key
-
       - name: Run playbook
-        run: ansible-playbook -vvv ansible/deploy.yml -u ${{ secrets.ANSIBLE_USER }} -i ${{ secrets.ANSIBLE_INVENTORY }} --key .ansible_key
+        run: ansible-playbook -vvv ansible/deploy.yml -u ${{ secrets.ANSIBLE_USER }} -i ${{ secrets.ANSIBLE_INVENTORY }} --key-file .ansible_key
