@@ -44,3 +44,18 @@ jobs:
           echo VERSION=$VERSION
           docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
           docker push $IMAGE_ID:$VERSION
+
+  deploy:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Create SSH key
+        run: |
+          mkdir .ssh
+          chmod 700 .ssh
+          echo "${{ SSH_PRIVATE_KEY }}" > .ssh/id_rsa
+          chmod 400 .ssh/id_rsa
+
+      - name: Run playbook
+        run: ansible-playbook ansible/deploy.yml -u ${{ ANSIBLE_USER }} -i ${{ ANSIBLE_INVENTORY }}
