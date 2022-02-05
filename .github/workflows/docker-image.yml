@@ -58,5 +58,5 @@ jobs:
           playbook: ansible/deploy.yml
           key: ${{secrets.SSH_PRIVATE_KEY}}
           options: |
-            -u ${{ ANSIBLE_USER }}
-            -i ${{ ANSIBLE_INVENTORY }}
+            -u ${{ secrets.ANSIBLE_USER }}
+            -i ${{ secrets.ANSIBLE_INVENTORY }}
