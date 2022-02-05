@@ -18,8 +18,11 @@ jobs:
     - name: Build the Docker image
       run: docker build . --file Dockerfile --tag fastapi-app:latest
 
+    - name: Tag the Docker image
+      run: docker tag fastapi-app:latest gchr.io/ijustbsd/fastapi-app:latest
+
     - name: Sign in to the registry
       run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
     - name: Push container image
-      run: docker push fastapi-app:latest
+      run: docker push gchr.io/ijustbsd/fastapi-app:latest
