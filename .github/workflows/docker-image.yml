@@ -26,4 +26,6 @@ jobs:
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Push container image
-        run: docker push fastapi-app:latest
+        run: |
+          docker tag fastapi-app:latest ghcr.io/${{ github.repository_owner }}/fastapi-app:latest
+          docker push ghcr.io/${{ github.repository_owner }}/fastapi-app:latest
