@@ -52,10 +52,10 @@ jobs:
     steps:
       - name: Create SSH key
         run: |
-          mkdir .ssh
-          chmod 700 .ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > .ssh/id_rsa
-          chmod 400 .ssh/id_rsa
+          mkdir ~/.ssh
+          chmod 700 ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 400 ~/.ssh/id_rsa
 
       - name: Run playbook
         run: ansible-playbook ansible/deploy.yml -u ${{ secrets.ANSIBLE_USER }} -i ${{ secrets.ANSIBLE_INVENTORY }}
