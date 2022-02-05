@@ -1,0 +1,25 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag fastapi-app:latest
+
+    - name: Sign in to the registry
+      run: echo $CR_PAT | docker login ghcr.io -u USERNAME --password-stdin
+
+    - name: Push container image
+      run: echo $CR_PAT | docker push ghcr.io/ijustbsd/fastapi-app:latest
