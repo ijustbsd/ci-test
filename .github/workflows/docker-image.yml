@@ -50,6 +50,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - uses: actions/checkout@v2
+
       - name: Create SSH key
         run: |
           mkdir ~/.ssh
@@ -58,4 +60,4 @@ jobs:
           chmod 400 ~/.ssh/id_rsa
 
       - name: Run playbook
-        run: ansible-playbook ansible/deploy.yml -u ${{ secrets.ANSIBLE_USER }} -i ${{ secrets.ANSIBLE_INVENTORY }}
+        run: ansible-playbook -vvv ansible/deploy.yml -u ${{ secrets.ANSIBLE_USER }} -i ${{ secrets.ANSIBLE_INVENTORY }}
