@@ -52,11 +52,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Create SSH key
+        run: echo "${{ secrets.SSH_PRIVATE_KEY }}" > .ansible_key
+
       - name: Run playbook
-        uses: dawidd6/action-ansible-playbook@v2
-        with:
-          playbook: ansible/deploy.yml
-          key: ${{secrets.SSH_PRIVATE_KEY}}
-          options: |
-            -u ${{ secrets.ANSIBLE_USER }}
-            -i ${{ secrets.ANSIBLE_INVENTORY }}
+        run: ansible-playbook -vvv ansible/deploy.yml -u ${{ secrets.ANSIBLE_USER }} -i ${{ secrets.ANSIBLE_INVENTORY }} --key .ansible_key
