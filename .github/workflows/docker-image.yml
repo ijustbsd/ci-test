@@ -54,8 +54,8 @@ jobs:
         run: |
           mkdir .ssh
           chmod 700 .ssh
-          echo "${{ SSH_PRIVATE_KEY }}" > .ssh/id_rsa
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > .ssh/id_rsa
           chmod 400 .ssh/id_rsa
 
       - name: Run playbook
-        run: ansible-playbook ansible/deploy.yml -u ${{ ANSIBLE_USER }} -i ${{ ANSIBLE_INVENTORY }}
+        run: ansible-playbook ansible/deploy.yml -u ${{ secrets.ANSIBLE_USER }} -i ${{ secrets.ANSIBLE_INVENTORY }}
