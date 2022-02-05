@@ -14,4 +14,5 @@
           project_src: /apps/ci-test
           files:
             - docker-compose.prod.yml
+          pull: yes
           restarted: yes
