@@ -3,12 +3,6 @@
   hosts: all
   tasks:
 
-      - name: Git checkout
-        ansible.builtin.git:
-          repo: 'https://github.com/ijustbsd/ci-test.git'
-          dest: /apps/ci-test
-          version: master
-
       - name: Start services
         community.docker.docker_compose:
           project_name: ci-test
