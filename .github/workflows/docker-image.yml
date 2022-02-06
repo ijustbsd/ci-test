@@ -9,8 +9,7 @@ on:
   pull_request:
     
 env:
-  IMAGE_NAME: fastapi-app
-  IMAGE_ID: ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME
+  IMAGE_ID: ghcr.io/${{ github.repository_owner }}/fastapi-app
 
 jobs:
 
