@@ -28,7 +28,7 @@ jobs:
         uses: cycjimmy/semantic-release-action@v2
         id: semantic
         env:
-          GITHUB_TOKEN: ${{ secrets.SEMANTIC_RELEASE_PAT }}
+          GH_TOKEN: ${{ secrets.SEMANTIC_RELEASE_PAT }}
 
       - name: Build the Docker image
         run: docker build . --file Dockerfile --tag $IMAGE_NAME:${{ steps.semantic.outputs.new_release_version }} --tag $IMAGE_NAME:latest
