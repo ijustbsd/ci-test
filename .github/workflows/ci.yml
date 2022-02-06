@@ -50,6 +50,7 @@ jobs:
         id: build
         run: |
           VERSION=$(echo "${{ github.ref }}" | cut -c 2-)
+          echo $VERSION
           
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
           docker build . --file Dockerfile --tag $IMAGE_ID:$VERSION --tag $IMAGE_ID:latest
