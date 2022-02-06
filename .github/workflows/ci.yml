@@ -12,8 +12,6 @@ jobs:
   version:
 
     runs-on: ubuntu-latest
-    
-    if: github.ref == 'refs/heads/master'
 
     permissions:
       contents: write
@@ -25,13 +23,10 @@ jobs:
       
       - name: Semantic Release
         uses: cycjimmy/semantic-release-action@v2
+        if: github.ref == 'refs/heads/master'
         id: semantic
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          
-    outputs:
-      new_release_version: ${{ steps.semantic.outputs.new_release_version }}
-    
 
   build:
     needs:
@@ -46,21 +41,19 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Build the Docker image
+      - name: Build and push the Docker image
         id: build
         run: |
-          VERSION=$(git describe --tags | cut -c 2-)
-          echo $VERSION
-          
+          VERSION=$(git describe --tags --always | cut -c 2-)
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
           docker build . --file Dockerfile --tag $IMAGE_ID:$VERSION --tag $IMAGE_ID:latest
           docker push $IMAGE_ID:$VERSION
-          docker push $IMAGE_ID:latest
-          
-          echo "::set-output name=image_url::$IMAGE_ID:$VERSION"
-  
+          echo "::set-output name=image_id::$IMAGE_ID"
+          echo "::set-output name=image_version::$VERSION"
+
     outputs:
-      image_url: ${{ steps.build.outputs.image_url }}
+      image_id: ${{ steps.build.outputs.image_id }}
+      image_version: ${{ steps.build.outputs.image_version }}
 
   quality:
     needs:
@@ -69,7 +62,7 @@ jobs:
     runs-on: ubuntu-latest
 
     container:
-      image: ${{ needs.build.outputs.image_url }}
+      image: ${{ needs.build.outputs.image_id }}:${{ needs.build.outputs.image_version }}
 
     steps:
 
@@ -77,6 +70,11 @@ jobs:
         run: |
           cd /app
           pytest
+
+      - name: Push latest version
+        if: github.ref == 'refs/heads/master'
+        run: |
+          docker push ${{ needs.build.outputs.image_id }}:latest
 
   deploy:
     needs:
