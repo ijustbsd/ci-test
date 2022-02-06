@@ -52,7 +52,7 @@ jobs:
           echo "::set-output name=image_url::$IMAGE_ID:$VERSION"
   
     outputs:
-      image_url: ${{ steps.push_container.outputs.git_pr_sha }}
+      image_url: ${{ steps.push_container.outputs.image_url }}
 
   quality:
     needs:
