@@ -48,8 +48,26 @@ jobs:
           docker push $IMAGE_ID:$VERSION
           docker push $IMAGE_ID:latest
 
+  quality:
+    needs:
+      - push
+
+    runs-on: ubuntu-latest
+
+    container:
+      image: $IMAGE_ID:latest
+
+    steps:
+
+      - name: Run tests
+        run: |
+          cd /app
+          pytest
+
   deploy:
-    needs: push
+    needs:
+      - push
+      - quality
 
     runs-on: ubuntu-latest
 
