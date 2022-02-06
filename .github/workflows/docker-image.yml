@@ -47,6 +47,8 @@ jobs:
 
           docker push $IMAGE_ID:$VERSION
           docker push $IMAGE_ID:latest
+          
+          echo "::set-output name=image_url::$IMAGE_ID:$VERSION"
 
   quality:
     needs:
@@ -55,7 +57,7 @@ jobs:
     runs-on: ubuntu-latest
 
     container:
-      image: ${{ env.IMAGE_ID }}:latest
+      image: ${{ needs.push.outputs.image_url }}
 
     steps:
 
