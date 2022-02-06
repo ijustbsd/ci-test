@@ -16,7 +16,7 @@
             version: "3"
             services:
               app:
-                image: {{ image }}
+                image: "{{ image }}"
                 restart: always
                 ports:
                   - "8000:8000"
