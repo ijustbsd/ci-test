@@ -42,15 +42,17 @@ jobs:
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Push container image
+        id: push_container
         run: |
           VERSION=${{ steps.semantic.outputs.new_release_version }}
-          
-          echo "$IMAGE_ID:$VERSION"
 
           docker push $IMAGE_ID:$VERSION
           docker push $IMAGE_ID:latest
           
           echo "::set-output name=image_url::$IMAGE_ID:$VERSION"
+  
+    outputs:
+      image_url: ${{ steps.push_container.outputs.git_pr_sha }}
 
   quality:
     needs:
