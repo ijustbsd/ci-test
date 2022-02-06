@@ -33,13 +33,22 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build the Docker image
-        run: docker build . --file Dockerfile --tag $IMAGE_NAME:${{ steps.semantic.outputs.new_release_version }} --tag $IMAGE_NAME:latest
+        run: docker build . --file Dockerfile --tag $IMAGE_NAME:latest
 
       - name: Sign in to the registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Push container image
-        run: docker push ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME:latest
+        if: steps.semantic.outputs.new_release_published == 'true'
+        run: |
+          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME
+
+          # Strip git ref prefix from version
+          VERSION=${{ steps.semantic.outputs.new_release_version }}
+          echo IMAGE_ID=$IMAGE_ID
+          echo VERSION=$VERSION
+          docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
+          docker push $IMAGE_ID:$VERSION
 
   deploy:
     needs: push
