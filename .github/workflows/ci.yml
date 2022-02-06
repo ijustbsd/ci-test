@@ -24,7 +24,6 @@ jobs:
       
       - name: Semantic Release
         uses: cycjimmy/semantic-release-action@v2
-        id: semantic
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     
@@ -44,7 +43,7 @@ jobs:
 
       - name: Build the Docker image
         run: |
-          VERSION=${{ steps.semantic.outputs.new_release_version }}
+          VERSION=${{ needs.version.outputs.new_release_version }}
 
           docker build . --file Dockerfile --tag $IMAGE_ID:$VERSION --tag $IMAGE_ID:latest
 
@@ -54,7 +53,7 @@ jobs:
       - name: Push container image
         id: push_container
         run: |
-          VERSION=${{ steps.semantic.outputs.new_release_version }}
+          VERSION=${{ needs.version.outputs.new_release_version }}
 
           docker push $IMAGE_ID:$VERSION
           docker push $IMAGE_ID:latest
