@@ -11,8 +11,14 @@
 
       - name: Start services
         community.docker.docker_compose:
-          project_src: /apps/ci-test
-          files:
-            - docker-compose.prod.yml
+          project_name: ci-test
+          definition:
+            version: "3"
+            services:
+              app:
+                image: {{ image }}
+                restart: always
+                ports:
+                  - "8000:8000"
           pull: yes
           restarted: yes

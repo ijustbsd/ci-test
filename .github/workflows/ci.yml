@@ -48,12 +48,10 @@ jobs:
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
           docker build . --file Dockerfile --tag $IMAGE_ID:$VERSION --tag $IMAGE_ID:latest
           docker push $IMAGE_ID:$VERSION
-          echo "::set-output name=image_id::$IMAGE_ID"
-          echo "::set-output name=image_version::$VERSION"
+          echo "::set-output name=image::$IMAGE_ID:$VERSION"
 
     outputs:
-      image_id: ${{ steps.build.outputs.image_id }}
-      image_version: ${{ steps.build.outputs.image_version }}
+      image: ${{ steps.build.outputs.image }}
 
   quality:
     needs:
@@ -62,22 +60,17 @@ jobs:
     runs-on: ubuntu-latest
 
     container:
-      image: ${{ needs.build.outputs.image_id }}:${{ needs.build.outputs.image_version }}
+      image: ${{ needs.build.outputs.image }}
 
     steps:
-
       - name: Run tests
         run: |
           cd /app
           pytest
 
-      - name: Push latest version
-        if: github.ref == 'refs/heads/master'
-        run: |
-          docker push ${{ needs.build.outputs.image_id }}:latest
-
   deploy:
     needs:
+      - build
       - quality
 
     runs-on: ubuntu-latest
@@ -98,3 +91,4 @@ jobs:
           options: |
             -u ${{ secrets.ANSIBLE_USER }}
             -i ${{ secrets.ANSIBLE_INVENTORY }}
+            --extra-vars image=${{ needs.build.outputs.image }}
