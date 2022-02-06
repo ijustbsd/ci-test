@@ -12,8 +12,6 @@ jobs:
   version:
 
     runs-on: ubuntu-latest
-    
-    if: github.ref == 'refs/heads/master'
 
     permissions:
       contents: write
@@ -25,13 +23,10 @@ jobs:
       
       - name: Semantic Release
         uses: cycjimmy/semantic-release-action@v2
+        if: github.ref == 'refs/heads/master'
         id: semantic
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          
-    outputs:
-      new_release_version: ${{ steps.semantic.outputs.new_release_version }}
-    
 
   build:
     needs:
