@@ -1,28 +1,24 @@
-name: Docker Image CI
+name: CI
 
 on:
   push:
     branches:
       - master
-    tags:
-      - v*
-  pull_request:
     
 env:
   IMAGE_ID: ghcr.io/${{ github.repository_owner }}/fastapi-app
 
 jobs:
 
-  push:
+  version:
 
     runs-on: ubuntu-latest
-    
+
     permissions:
-      packages: write
       contents: write
       issues: write
       pull-requests: write
-
+  
     steps:
       - uses: actions/checkout@v2
       
@@ -31,6 +27,18 @@ jobs:
         id: semantic
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    
+
+  push:
+
+    runs-on: ubuntu-latest
+    
+    permissions:
+      packages: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v2
 
       - name: Build the Docker image
         run: |
