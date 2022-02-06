@@ -55,7 +55,7 @@ jobs:
     runs-on: ubuntu-latest
 
     container:
-      image: $IMAGE_ID:latest
+      image: ${{ env.IMAGE_ID }}:latest
 
     steps:
 
